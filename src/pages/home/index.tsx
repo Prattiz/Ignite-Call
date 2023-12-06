@@ -3,6 +3,7 @@ import { Container, Content, ImageContainer } from "./styles";
 
 import previewImg from "../../assets/Calendar.png";
 import Image from "next/image";
+import { ClainUserNameForm } from "./components/ClainUsernameForm";
 
 
 export default function Home() {
@@ -11,6 +12,7 @@ export default function Home() {
       <Content>
         <Heading size='4xl'>Agendamento descomplicado</Heading>
         <Text size='lg'>Conecte seu calendário e permita que as pessoas marquem agendamentos no seu tempo livre.</Text>
+        <ClainUserNameForm/>
       </Content>
       <ImageContainer>
         <Image 
