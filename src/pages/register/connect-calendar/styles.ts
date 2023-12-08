@@ -1,4 +1,4 @@
-import { Box, styled } from "@ignite-ui/react";
+import { Box, Text, styled } from "@ignite-ui/react";
 
 export const Connect = styled(Box, {
     marginTop: '$6',
@@ -14,4 +14,5 @@ export const ConnectItem = styled('div', {
     padding: '$4 $6',
     borderRadius: '$md',
     marginBottom: '$2',
-})
+});
+
