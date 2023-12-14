@@ -19,6 +19,7 @@ import { z } from 'zod'
 import { getInMinutes } from '../../../utils/formater-in-minutes'
 import { getWeekDays } from '../../../utils/formater'
 import { api } from '../../../lib/axios'
+import { useRouter } from 'next/router'
 
 const timeIntervalsFormSchema = z.object({
   intervals: z
@@ -90,14 +91,17 @@ export default function TimeIntervals() {
     name: 'intervals',
   })
 
-  const intervals = watch('intervals')
+  const intervals = watch('intervals');
+  const router = useRouter();
 
   async function handleSetTimeIntervals(data: any) {
-    const { intervals } = data as TimeIntervalsFormOutput
+    const { intervals } = data as TimeIntervalsFormOutput;
 
     await api.post("/users/time-intervals", {
       intervals
     })
+
+    await router.push(`/register/create-profile`)
   }
 
   return (
