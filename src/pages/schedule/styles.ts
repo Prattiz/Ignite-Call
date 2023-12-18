@@ -1,4 +1,4 @@
-import { Heading, styled, Text } from '@ignite-ui/react';
+import { Heading, styled, Text, Box } from '@ignite-ui/react';
 
 export const Container = styled('main', {
   maxWidth: 852,
@@ -20,3 +20,11 @@ export const UserHeader = styled('header', {
     color: '$gray200',
   },
 });
+
+export const CalendarContainer = styled(Box, {
+    margin: '$6 auto 0',
+    padding: 0,
+    display: 'grid',
+    position: 'relative',
+});
+
