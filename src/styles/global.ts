@@ -14,13 +14,12 @@ export const GlobalStyles = globalCss({
   },
 
   '::-webkit-scrollbar': {
-    width: '$5',
-    borderRadius: '$md',
+    width: '$3',
     backgroundColor: '$gray600'
   },
 
   '::-webkit-scrollbar-thumb': {
-    backgroundColor: '$ignite300', 
-    borderRadius: 6, 
+    backgroundColor: '$gray500', 
+    borderRadius: 99, 
   }
 })
