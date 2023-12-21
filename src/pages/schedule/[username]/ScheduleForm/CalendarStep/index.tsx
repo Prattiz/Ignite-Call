@@ -1,12 +1,16 @@
 import { useState } from "react";
 import { Calendar } from "../../../../../components/Calendar";
 import { CalendarContainer, TimePicker, TimePickerHeader, TimePickerItem, TimePickerList } from "../../../styles";
+import dayjs from "dayjs";
 
 export function CalendarStep(){
 
     const [ selectedDate, onSelectedDate ] = useState<Date | any>(null)
 
     const hasSelectedDate = !!selectedDate;
+
+    const selectedDay = selectedDate ? dayjs(selectedDate).format('dddd') : null;
+    const formatDate = selectedDate ? dayjs(selectedDate).format('DD[ de ]MMMM') : null;
 
     return(
         <CalendarContainer isTimePickerOpen={hasSelectedDate}>
@@ -18,7 +22,7 @@ export function CalendarStep(){
 
             <TimePicker>
                 <TimePickerHeader>
-                    
+                    {selectedDay}, <span>{formatDate}</span>
                 </TimePickerHeader>
 
                 <TimePickerList>
