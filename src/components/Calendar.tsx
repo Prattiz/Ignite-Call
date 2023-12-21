@@ -10,6 +10,11 @@ import dayjs from 'dayjs';
 import { useMemo, useState } from 'react';
 
 
+interface CalendarProps{
+  selectedDate?: Date,
+  onSelectedDate: (date: Date) => void,
+}
+
 interface CalendarWeek {
   week: number,
   days: Array<{
@@ -20,7 +25,8 @@ interface CalendarWeek {
 
 type CalendarWeeks = CalendarWeek[]
 
-export function Calendar() {
+
+export function Calendar({selectedDate, onSelectedDate}: CalendarProps) {
 
   const shortWeekDays = getWeekDays({ short: true });
 
@@ -137,7 +143,9 @@ export function Calendar() {
                 {days.map(({ date, disabled }) => {
                   return (
                     <td key={ date.toString() }>
-                      <CalendarDay disabled={ disabled }>
+                      <CalendarDay 
+                      onClick={() => onSelectedDate(date.toDate())} 
+                      disabled={ disabled }>
                         {date.get('date')}
                       </CalendarDay>
                     </td>
