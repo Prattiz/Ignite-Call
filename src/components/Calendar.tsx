@@ -7,7 +7,10 @@ import
 }
 from './styles';
 import dayjs from 'dayjs';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '../lib/axios';
+import { useRouter } from 'next/router';
 
 
 interface CalendarProps{
@@ -23,6 +26,10 @@ interface CalendarWeek {
   }>,
 }
 
+interface BlockedDates{
+  blokedWeekDays: number[]
+}
+
 type CalendarWeeks = CalendarWeek[]
 
 
@@ -33,9 +40,12 @@ export function Calendar({selectedDate, onSelectedDate}: CalendarProps) {
   const [ currentDate, setCurrentDate ] = useState(() => {
     return dayjs().set('date', 1)
   });
+  const [ blockedDates, SetBlockedDates ] = useState<BlockedDates>();
 
   const currentMonth = currentDate.format("MMMM");
   const currentYear = currentDate.format("YYYY");
+
+  
 
   const calendarWeeks = useMemo(() => {
 
@@ -56,7 +66,7 @@ export function Calendar({selectedDate, onSelectedDate}: CalendarProps) {
     const lastDayInCurrentMonth = currentDate.set('date', currentDate.daysInMonth())
     const lastWeekDay = lastDayInCurrentMonth.get('day');
 
-    const nextMonthFill =  Array.from({
+    const nextMonthFill = Array.from({
 
       length: 7 - (lastWeekDay + 1)
 
@@ -69,7 +79,11 @@ export function Calendar({selectedDate, onSelectedDate}: CalendarProps) {
         return {date, disabled: true }
       }),
       ...daysInMonth.map((date) => {
-        return { date, disabled: date.endOf('day').isBefore(new Date()) }
+        return { 
+          date, 
+          disabled: date.endOf('day').isBefore(new Date()) ||
+          blockedDates?.blokedWeekDays?.includes(date.get('day')) || false
+        }
       }),
       ...nextMonthFill.map((date) => {
         return { date, disabled: true }
@@ -93,7 +107,7 @@ export function Calendar({selectedDate, onSelectedDate}: CalendarProps) {
     )
 
     return calendarWeeks
-  }, [currentDate]);
+  }, [currentDate, blockedDates]);
 
 
   function handlePreviusMonth(){
@@ -107,6 +121,26 @@ export function Calendar({selectedDate, onSelectedDate}: CalendarProps) {
 
     setCurrentDate(previusMonthDate)
   }
+
+
+  const router = useRouter();
+  const username = String(router.query.username);
+
+  
+
+  useEffect(() => {
+   
+    api.get(`users/${username}/blocked-dates`, {
+        params:{
+            year: currentDate.get('year'),
+            month: currentDate.get('month'),
+        },
+
+    }).then(response => {
+        SetBlockedDates(response.data)
+    })
+
+}, [username])
 
   return (
     <CalendarContainer>

@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { Calendar } from "../../../../../components/Calendar";
 import { CalendarContainer, TimePicker, TimePickerHeader, TimePickerItem, TimePickerList } from "../../../styles";
 import dayjs from "dayjs";
 import { useRouter } from "next/router";
 import { api } from "../../../../../lib/axios";
+import { useQuery } from "@tanstack/react-query";
 
 interface AvailabilityProps{
     possibleTimes: number[],
@@ -22,11 +23,29 @@ export function CalendarStep(){
     const router = useRouter();
     const username = String(router.query.username);
 
+    // const selectDateWithoutTime = selectedDate ? dayjs(selectedDate).format('YYYY-MM-DD') : null;
+    // const { data: availability } = useQuery<AvailabilityProps> 
+    // (
+    //     ['availability', selectDateWithoutTime],
+    //     async () => {
+    //       const response = await api.get(`/users/${username}/availability`, {
+    //         params: {
+    //           date: selectDateWithoutTime,
+    //         },
+    //       })
+    
+    //       return response.data
+    //     },
+    //     {
+    //       enabled: !!selectedDate ,
+    //     },
+    // )
+
     useEffect(() => {
         if(!selectedDate){
             return 
         }
-        api.get(`users/${username}//availability`, {
+        api.get(`users/${username}/availability`, {
             params:{
                 date: dayjs(selectedDate).format('YYYY-MM-DD')
             }
@@ -58,7 +77,7 @@ export function CalendarStep(){
                                 key={hour}
                                 disabled={!availability.availableTimes.includes(hour)}
                                 >
-                                    {String(hour).padStart(2, '0')}:00h
+                                    { String(hour).padStart(2, '0') }:00h
 
                                 </TimePickerItem>
                             )
