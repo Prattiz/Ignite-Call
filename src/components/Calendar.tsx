@@ -27,11 +27,10 @@ interface CalendarWeek {
 }
 
 interface BlockedDates{
-  blokedWeekDays: number[]
+  blockedWeekDays: number[]
 }
 
 type CalendarWeeks = CalendarWeek[]
-
 
 export function Calendar({selectedDate, onSelectedDate}: CalendarProps) {
 
@@ -45,15 +44,17 @@ export function Calendar({selectedDate, onSelectedDate}: CalendarProps) {
   const currentMonth = currentDate.format("MMMM");
   const currentYear = currentDate.format("YYYY");
 
-  
-
   const calendarWeeks = useMemo(() => {
 
+    if(!blockedDates){
+      return [];
+    }
+    
     const daysInMonth = Array.from({
       length: currentDate.daysInMonth(),
-    }).map(( _, i ) => {
+    }).map((_, i) => {
       return currentDate.set('date', i + 1)
-    });
+    })
 
     const firstWeekDay = currentDate.get('day');
 
@@ -82,7 +83,7 @@ export function Calendar({selectedDate, onSelectedDate}: CalendarProps) {
         return { 
           date, 
           disabled: date.endOf('day').isBefore(new Date()) ||
-          blockedDates?.blokedWeekDays?.includes(date.get('day')) || false
+          blockedDates.blockedWeekDays.includes(date.get('day')),
         }
       }),
       ...nextMonthFill.map((date) => {
