@@ -13,7 +13,7 @@ export function ScheduleForm(){
     if(selectedDateTime){
         return <ConfirmStep 
         schedulingDate={selectedDateTime} 
-        cancelConfirmation={handleGoBack}/>
+        goBackToCalendar={handleGoBack}/>
     }
     return(
        <CalendarStep onSelectDateTime={setSelectedDateTime}/>
