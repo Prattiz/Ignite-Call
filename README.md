@@ -1,6 +1,6 @@
-# Ignite Call
+# Ignite Call 
+![icon](https://github.com/Prattiz/Ignite-Call/assets/135062914/9a0ca94b-978e-455b-92af-a9ad10555204)
 
-![calendar-fill](https://github.com/Prattiz/Ignite-Call/assets/135062914/353bb747-48eb-4aa6-8e32-82aad7b46092)
 
 
 Bem-vindo ao projeto Ignite Call - Um calendário full stack desenvolvido em React, TypeScript e integrado com a API da Google. Este projeto utiliza tecnologias modernas e bibliotecas poderosas para fornecer uma experiência completa de agendamento entre usuários, assim os agendamentos indo ao google calendar.
