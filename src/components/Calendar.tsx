@@ -8,7 +8,6 @@ import
 from './styles';
 import dayjs from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { api } from '../lib/axios';
 import { useRouter } from 'next/router';
 
@@ -33,7 +32,7 @@ interface BlockedDates{
 
 type CalendarWeeks = CalendarWeek[]
 
-export function Calendar({selectedDate, onSelectedDate}: CalendarProps) {
+export function Calendar({ onSelectedDate }: CalendarProps) {
 
   const shortWeekDays = getWeekDays({ short: true });
 
@@ -143,7 +142,7 @@ export function Calendar({selectedDate, onSelectedDate}: CalendarProps) {
         SetBlockedDates(response.data)
     })
 
-}, [username])
+}, [username, currentDate])
 
   return (
     <CalendarContainer>
