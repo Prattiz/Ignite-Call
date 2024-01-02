@@ -7,6 +7,7 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   if (req.method !== 'POST') {
+    console.log('error 405')
     return res.status(405).end()
   }
 
