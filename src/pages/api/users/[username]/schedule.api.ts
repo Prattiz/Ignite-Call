@@ -1,108 +1,107 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "../../../../lib/prisma";
-import { z } from "zod";
-import dayjs from "dayjs";
-import { getGoogleOAuthToken } from "../../../../lib/google";
-import { google } from "googleapis";
+import { NextApiRequest, NextApiResponse } from 'next'
+import { prisma } from '../../../../lib/prisma'
+import { z } from 'zod'
+import dayjs from 'dayjs'
+import { getGoogleOAuthToken } from '../../../../lib/google'
+import { google } from 'googleapis'
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse){
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  if (req.method !== 'POST') {
+    return res.status(405).end()
+  }
 
-    if(req.method !== 'POST'){
-        return res.status(405).end()
-    }
+  const username = String(req.query.username)
 
-    const username = String(req.query.username);
+  const createSchedulingBodySchema = z.object({
+    name: z.string(),
+    email: z.string().email(),
+    details: z.string(),
+    date: z.string().datetime(),
+  })
 
-    const createSchedulingBodySchema = z.object({
-        name: z.string(),
-        email: z.string().email(),
-        details: z.string(),
-        date: z.string().datetime(),
+  const user = await prisma.user.findUnique({
+    where: {
+      username,
+    },
+  })
+
+  if (!user) {
+    return res.status(400).json({ message: 'user not found' })
+  }
+
+  const { name, email, details, date } = createSchedulingBodySchema.parse(
+    req.body,
+  )
+
+  const schedulingDate = dayjs(date).startOf('hour')
+
+  if (schedulingDate.isBefore(new Date())) {
+    return res.status(400).json({
+      message: 'Date is in the past.',
     })
+  }
 
-    const user = await prisma.user.findUnique({
-        where:{
-            username,
-        }
+  const conflictingScheduling = await prisma.scheduling.findFirst({
+    where: {
+      user_id: user.id,
+      date: schedulingDate.toDate(),
+    },
+  })
+
+  if (conflictingScheduling) {
+    return res.status(400).json({
+      message: 'There is another scheduling at at the same time.',
     })
-    
-    if(!user){
-        return res.status(400).json({ message: 'user not found' })
-    }
+  }
 
-    
-    const { name, email, details, date } = createSchedulingBodySchema.parse(req.body);
+  const scheduling = await prisma.scheduling.create({
+    data: {
+      name,
+      email,
+      details,
+      date: schedulingDate.toDate(),
+      user_id: user.id,
+    },
+  })
 
-    const schedulingDate = dayjs(date).startOf('hour');
+  const calendar = google.calendar({
+    version: 'v3',
+    auth: await getGoogleOAuthToken(user.id),
+  })
 
-    if (schedulingDate.isBefore(new Date())) {
-      return res.status(400).json({
-        message: 'Date is in the past.',
-      })
-    }
-  
-    const conflictingScheduling = await prisma.scheduling.findFirst({
-      where: {
-        user_id: user.id,
-        date: schedulingDate.toDate(),
+  await calendar.events.insert({
+    calendarId: 'primary',
+
+    conferenceDataVersion: 1,
+    requestBody: {
+      summary: `Ignite Call: ${name}`,
+
+      description: details,
+
+      start: {
+        dateTime: schedulingDate.format(),
       },
-    })
-  
-    if (conflictingScheduling) {
-      return res.status(400).json({
-        message: 'There is another scheduling at at the same time.',
-      })
-    }
-  
-    const scheduling = await prisma.scheduling.create({
-      data: {
-        name,
-        email,
-        details,
-        date: schedulingDate.toDate(),
-        user_id: user.id,
+
+      end: {
+        dateTime: schedulingDate.add(1, 'hour').format(),
       },
-    })
 
-    const calendar = google.calendar({
-      version: 'v3',
-      auth: await getGoogleOAuthToken(user.id),
-    });
-  
-    await calendar.events.insert({
+      attendees: [{ email, displayName: name }],
 
-      calendarId: 'primary',
+      conferenceData: {
+        createRequest: {
+          requestId: scheduling.id,
 
-      conferenceDataVersion: 1,
-      requestBody: {
-        
-        summary: `Ignite Call: ${name}`,
-
-        description: details,
-
-        start: {
-          dateTime: schedulingDate.format(),
+          conferenceSolutionKey: {
+            type: 'hangoutsMeet',
+          },
         },
+      },
+    },
+  })
 
-        end: {
-          dateTime: schedulingDate.add(1, 'hour').format(),
-        },
-
-        attendees: [{ email, displayName: name }],
-        
-        conferenceData: {
-
-          createRequest: {
-
-            requestId: scheduling.id,
-
-            conferenceSolutionKey: {
-              type: 'hangoutsMeet'
-            }
-          }
-        }
-      }
-    })
-  
-    return res.status(201).end()
+  return res.status(201).end()
 }

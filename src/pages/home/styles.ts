@@ -1,35 +1,35 @@
 import { styled, Heading, Text } from '@ignite-ui/react'
 
 export const Container = styled('main', {
-    maxWidth: 'calc(100vw - (100vw - 1160px) / 2)',
-    marginLeft: 'auto',
-    height: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '$20',
+  maxWidth: 'calc(100vw - (100vw - 1160px) / 2)',
+  marginLeft: 'auto',
+  height: '100vh',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '$20',
 })
 
 export const Content = styled('div', {
-    maxWidth: 480,
-    padding: '0 $10',
-  
-    [`>${Heading}`]: {
-      '@media(max-width: 600px)': {
-        fontSize: '$6xl',
-      },
+  maxWidth: 480,
+  padding: '0 $10',
+
+  [`>${Heading}`]: {
+    '@media(max-width: 600px)': {
+      fontSize: '$6xl',
     },
-  
-    [`> ${Text}`]: {
-      maskType: '$2',
-      color: '$gray200',
-    },
+  },
+
+  [`> ${Text}`]: {
+    maskType: '$2',
+    color: '$gray200',
+  },
 })
 
 export const ImageContainer = styled('div', {
-    paddingRight: '$8',
-    overflow: 'hidden',
-  
-    '@media(max-width: 600px)': {
-      display: 'none',
-    },
+  paddingRight: '$8',
+  overflow: 'hidden',
+
+  '@media(max-width: 600px)': {
+    display: 'none',
+  },
 })

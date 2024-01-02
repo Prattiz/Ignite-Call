@@ -1,59 +1,66 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Text, TextArea, TextInput } from '@ignite-ui/react';
-import { CalendarBlank, Clock } from 'phosphor-react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { ConfirmForm, FormActions, FormError, FormHeader } from '../../../styles';
-import dayjs from 'dayjs';
-import { api } from '../../../../../lib/axios';
-import { useRouter } from 'next/router';
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Button, Text, TextArea, TextInput } from '@ignite-ui/react'
+import { CalendarBlank, Clock } from 'phosphor-react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import {
+  ConfirmForm,
+  FormActions,
+  FormError,
+  FormHeader,
+} from '../../../styles'
+import dayjs from 'dayjs'
+import { api } from '../../../../../lib/axios'
+import { useRouter } from 'next/router'
 
-
-interface ConfirmStepProps{
-  schedulingDate: Date,
+interface ConfirmStepProps {
+  schedulingDate: Date
   goBackToCalendar: () => void
 }
 
 const confirmFormSchema = z.object({
-  name: z.string()
-  .min(3, { message: 'O nome precisa no mínimo 3 caracteres' })
-  .regex(/^([a-z\\-]+)$/i, {message: 'O usuário só pode ter letras ou hifens'}),
+  name: z
+    .string()
+    .min(3, { message: 'O nome precisa no mínimo 3 caracteres' })
+    .regex(/^([a-z\\-]+)$/i, {
+      message: 'O usuário só pode ter letras ou hifens',
+    }),
 
   email: z.string().email({ message: 'Digite um e-mail válido' }),
-  
+
   details: z.string().nullable(),
 })
 
 type ConfirmFormData = z.infer<typeof confirmFormSchema>
 
-export function ConfirmStep({ schedulingDate, goBackToCalendar }: ConfirmStepProps) {
-
+export function ConfirmStep({
+  schedulingDate,
+  goBackToCalendar,
+}: ConfirmStepProps) {
   const {
     register,
     handleSubmit,
     formState: { isSubmitting, errors },
   } = useForm<ConfirmFormData>({
     resolver: zodResolver(confirmFormSchema),
-  });
+  })
 
-  const router = useRouter();
+  const router = useRouter()
   const username = String(router.query.username)
 
-  const date = dayjs(schedulingDate).format('DD[ de ]MMMM[ de ]YYYY');
-  const selectedHour = dayjs(schedulingDate).format('HH:mm[h]');
-
+  const date = dayjs(schedulingDate).format('DD[ de ]MMMM[ de ]YYYY')
+  const selectedHour = dayjs(schedulingDate).format('HH:mm[h]')
 
   async function handleConfirmScheduling(data: ConfirmFormData) {
-    
-    const { name, email, details } = data;
+    const { name, email, details } = data
     console.log(data)
 
     await api.post(`users/${username}/schedule`, {
-      name, 
-      email, 
+      name,
+      email,
       details,
-      date: schedulingDate
-    });
+      date: schedulingDate,
+    })
 
     goBackToCalendar()
   }

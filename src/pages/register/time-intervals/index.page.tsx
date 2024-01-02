@@ -11,8 +11,11 @@ import { ArrowRight } from 'phosphor-react'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { Container, FormError, Header } from '../styles'
 import {
-  IntervalBox, IntervalContainer,
-  IntervalDay, IntervalInputs, IntervalItem,
+  IntervalBox,
+  IntervalContainer,
+  IntervalDay,
+  IntervalInputs,
+  IntervalItem,
 } from './styles'
 
 import { z } from 'zod'
@@ -92,29 +95,29 @@ export default function TimeIntervals() {
     name: 'intervals',
   })
 
-  const intervals = watch('intervals');
-  const router = useRouter();
+  const intervals = watch('intervals')
+  const router = useRouter()
 
   async function handleSetTimeIntervals(data: any) {
-    const { intervals } = data as TimeIntervalsFormOutput;
+    const { intervals } = data as TimeIntervalsFormOutput
 
-    await api.post("/users/time-intervals", {
-      intervals
+    await api.post('/users/time-intervals', {
+      intervals,
     })
 
     await router.push(`/register/create-profile`)
   }
 
   return (
-    <>            
-      <NextSeo title="Sua Disponibilidade | Ignite Call" noindex/>
-      
+    <>
+      <NextSeo title="Sua Disponibilidade | Ignite Call" noindex />
+
       <Container>
         <Header>
           <Heading as="strong">Quase lá</Heading>
           <Text>
-            Defina o intervalo de horário que você está disponível em cada dia da
-            semana.
+            Defina o intervalo de horário que você está disponível em cada dia
+            da semana.
           </Text>
 
           <MultiStep size={4} currentStep={3} />
