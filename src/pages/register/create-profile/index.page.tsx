@@ -11,6 +11,7 @@ import { getServerSession } from "next-auth";
 import { buildNextAuthOptions } from "../../api/auth/[...nextauth].api";
 import { api } from "../../../lib/axios";
 import { useRouter } from "next/router";
+import { NextSeo } from "next-seo";
 
 
 const UpdateProfileFormSchema = z.object({
@@ -38,44 +39,47 @@ export default function UpdateProfile(){
     }
 
     return(
-        <Container>
-            <Header>
-                <Heading as='strong'>Bem Vindo ao Ignite Call!</Heading>
+        <>
+            <NextSeo title="Crie seu perfil | Ignite Call" noindex/>
 
-                <Text>
-                    Precisamos de algumas informações para criar seu perfil! Ah, você pode editar essas informações depois.
-                </Text>
+            <Container>
+                <Header>
+                    <Heading as='strong'>Bem Vindo ao Ignite Call!</Heading>
 
-                <MultiStep size={4} currentStep={4}/>
-            </Header>
+                    <Text>
+                        Precisamos de algumas informações para criar seu perfil! Ah, você pode editar essas informações depois.
+                    </Text>
 
-            <ProfileBox as='form' onSubmit={handleSubmit(handleUpdateProfile)}>
+                    <MultiStep size={4} currentStep={4}/>
+                </Header>
 
-                <label>
-                    <Text size='sm'>Foto de perfil</Text>
-                    <Avatar src={session.data?.user.avatar_url} alt={`foto de perfil de ${session.data?.user.name}`}/>
-                </label>
+                <ProfileBox as='form' onSubmit={handleSubmit(handleUpdateProfile)}>
 
-                <label>
-                    <Text size='sm'>Sobre você</Text>
-                    <TextArea placeholder="Seu nome" {...register('bio')}/> 
+                    <label>
+                        <Text size='sm'>Foto de perfil</Text>
+                        <Avatar src={session.data?.user.avatar_url} alt={`foto de perfil de ${session.data?.user.name}`}/>
+                    </label>
 
-                    <FormAnotation size='sm'>
-                        Fale um pouco sobre você. Isto será exibido em sua página pessoal.
-                    </FormAnotation>
+                    <label>
+                        <Text size='sm'>Sobre você</Text>
+                        <TextArea placeholder="Seu nome" {...register('bio')}/> 
 
-                </label>
+                        <FormAnotation size='sm'>
+                            Fale um pouco sobre você. Isto será exibido em sua página pessoal.
+                        </FormAnotation>
 
-                <Button type="submit" disabled={isSubmitting}>Finalizar <ArrowRight/></Button>
-            </ProfileBox>
-        </Container>
+                    </label>
+
+                    <Button type="submit" disabled={isSubmitting}>Finalizar <ArrowRight/></Button>
+                </ProfileBox>
+            </Container>
+        </>
     )
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
     const session = await getServerSession(req, res,  buildNextAuthOptions(req, res));
-
 
     return{
         props:{

@@ -1,5 +1,7 @@
-import { getCssText } from '@ignite-ui/react'
-import { Head, Html, Main, NextScript } from 'next/document'
+import { getCssText } from '@ignite-ui/react';
+import { Head, Html, Main, NextScript } from 'next/document';
+
+
 
 export default function Document() {
   return (
@@ -22,8 +24,8 @@ export default function Document() {
           id="stitches"
           dangerouslySetInnerHTML={{ __html: getCssText() }}
         />
+          <link rel="shortcut icon" href="../..//favicon.ico" />        
 
-        <title>Ignite Call</title>
       </Head>
 
       <body>
